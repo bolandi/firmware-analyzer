@@ -136,3 +136,7 @@ dmypy.json
 .metadata/
 .ideal/
 *.iml
+
+# Temp files
+images
+target
