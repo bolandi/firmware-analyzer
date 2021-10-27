@@ -2,13 +2,15 @@
 import logging
 import os
 import sys
-from src.binwalk.automation import _extract_firmware
+
+from src.binwalk.automation import run_binwalk
 
 try:
     from common_helper_process import execute_shell_command_get_return_code
 except ImportError:
     os.system('pip3 install -r requirements.txt')
 from common_helper_process import execute_shell_command_get_return_code
+
 
 def _pull_docker_images():
     logging.info('Pulling binwalk docker image')
@@ -20,11 +22,11 @@ def _pull_docker_images():
 
 
 def print_usage():
-    print('usage: setup.py [build|custom|clean]')
+    print('usage: run.py [build|custom|clean]')
 
 
 if __name__ == '__main__':
-    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+    logging.basicConfig(format='%(asctime)-15s %(module)s: %(message)s', stream=sys.stdout, level=logging.DEBUG)
     command = ''
     if len(sys.argv) > 1:
         command = sys.argv[1]
@@ -40,7 +42,7 @@ if __name__ == '__main__':
             print_usage()
     else:
         _pull_docker_images()
-        _extract_firmware()
+        run_binwalk()
     # TODO: run analysis
 
 '''
