@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 import logging
-import os
 import sys
 
 from src.binwalk.automation import run_binwalk
+from src.constants import *
 
 try:
     from common_helper_process import execute_shell_command_get_return_code
@@ -14,7 +14,7 @@ from common_helper_process import execute_shell_command_get_return_code
 
 def _pull_docker_images():
     logging.info('Pulling binwalk docker image')
-    output, return_code = execute_shell_command_get_return_code('docker pull sheabot/binwalk')
+    output, return_code = execute_shell_command_get_return_code(f'docker pull {BINWALK_DOCKER_IMAGE}')
     if return_code != 0:
         logging.error(f'Failed to pull binwalk docker image:\n{output}')
     else:

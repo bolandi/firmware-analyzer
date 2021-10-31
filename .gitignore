@@ -140,3 +140,7 @@ dmypy.json
 # Temp files
 images
 target
+
+# Local shell scripts
+*.sh
+
