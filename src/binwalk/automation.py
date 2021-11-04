@@ -7,7 +7,7 @@ from common_helper_process import execute_shell_command_get_return_code
 
 from src.constants import *
 
-COMMAND_BASE = f'cd images && docker run -v "{BASE_DIR}:/workspace" -w /workspace {BINWALK_DOCKER_IMAGE}'
+COMMAND_BASE = f'cd images && docker run --rm -v "{BASE_DIR}:/workspace" -w /workspace {BINWALK_DOCKER_IMAGE}'
 BINWALK_DIR = f'{DST_DIR}/binwalk'
 
 try:
