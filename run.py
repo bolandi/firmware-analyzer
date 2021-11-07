@@ -2,14 +2,13 @@
 import logging
 import sys
 
-from src.binwalk.automation import run_binwalk
 from src.constants import *
-
 try:
     from common_helper_process import execute_shell_command_get_return_code
 except ImportError:
     os.system('pip3 install -r requirements.txt')
 from common_helper_process import execute_shell_command_get_return_code
+from src.binwalk.automation import run_binwalk
 
 
 def _pull_docker_images():
