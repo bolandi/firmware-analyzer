@@ -2,6 +2,7 @@
 import logging
 import shutil
 from shutil import copyfile
+from os import path
 
 from common_helper_process import execute_shell_command_get_return_code
 
@@ -24,6 +25,10 @@ def _extract():
     - Signature analysis in CSV foramt: {file}.log
     """
     for file in SRC_FILES:
+        if path.exists(f'{BINWALK_DIR}/{file}.log'):
+            logging.info(f'{file} already extracted.')
+            continue
+        # todo: skip over directories in source folder
         logging.info(f'Extracting {file}')
         # todo: fix hex in csv (needs a PR to binwalk repo) and target permission
         cmd = f'{COMMAND_BASE} -C {DST_DIR}/binwalk -eMr {SRC_DIR}/{file} --log={BINWALK_DIR}/{file}.log -c'
@@ -70,6 +75,9 @@ def entropy(file=None, target_dir=None):
         return return_code
 
     for file in SRC_FILES:
+        if path.exists(f'{BINWALK_DIR}/{file}.entropy'):
+            logging.info(f'Entropy for {file} already calculated.')
+            continue
         cmd = f'{COMMAND_BASE} -EJ {SRC_DIR}/{file} --log={BINWALK_DIR}/{file}.entropy --csv'
         logging.info(f'Calculating entropy for {file}')
         output, return_code = execute_shell_command_get_return_code(

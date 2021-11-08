@@ -5,7 +5,8 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # Required lib for generating the entropy plot
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3-matplotlib
+    python3-matplotlib \
+    unzip
 
 # Create a non-root user named binwalk,
 # give them the password "binwalk" put them in the sudo group

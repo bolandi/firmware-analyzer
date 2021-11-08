@@ -144,3 +144,6 @@ target
 # Local shell scripts
 *.sh
 
+# Logs
+logs
+
