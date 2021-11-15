@@ -3,17 +3,20 @@ import logging
 import sys
 
 from src.constants import *
+
 try:
     from common_helper_process import execute_shell_command_get_return_code
 except ImportError:
     os.system('pip3 install -r requirements.txt')
 from common_helper_process import execute_shell_command_get_return_code
-from src.binwalk.automation import run_binwalk
+from src.cwe_checker.automation import run_cwe_checker
 
 
 def _pull_docker_images():
     logging.info('Pulling binwalk docker image')
     output, return_code = execute_shell_command_get_return_code(f'docker pull {BINWALK_DOCKER_IMAGE}')
+    logging.info('Pulling cwe_checker docker image')
+    output, return_code = execute_shell_command_get_return_code(f'docker pull {CWE_CHECKER_DOCKER_IMAGE}')
     if return_code != 0:
         logging.error(f'Failed to pull binwalk docker image:\n{output}')
     else:
@@ -24,6 +27,7 @@ def print_usage():
     print('usage: run.py [build|custom|clean]')
 
 
+# todo: parse output for params, should allow runing each tool separately
 if __name__ == '__main__':
     logging.basicConfig(format='%(asctime)-15s %(module)s: %(message)s', stream=sys.stdout, level=logging.DEBUG)
     command = ''
@@ -41,9 +45,10 @@ if __name__ == '__main__':
             print_usage()
     else:
         _pull_docker_images()
-        run_binwalk()
+        # run_binwalk()
+        run_cwe_checker()
     # TODO: run analysis
 
 '''
-Run all the tools and combine functionality between them e.g. extractions by binwalk, analysis by cwe-checker, et
+Run all the tools and combine functionality between them e.g. extractions by binwalk, analysis by cwe_checker, et
 '''
