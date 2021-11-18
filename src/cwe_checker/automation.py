@@ -47,7 +47,7 @@ def _scan_binwalk_carved_elfs():
             else:
                 logging.info('SUCCESS')
                 logging.debug(f'Return code = {return_code} - Output= {output}')
-                log_file[f'{cwd}/{elf}'] = json.loads(output)
+                log_file[f'{cwd}{elf}'] = json.loads(output)
 
     if len(log_file) == 0:
         logging.info('No results found')
