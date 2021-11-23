@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import logging
 import shutil
 from shutil import copyfile

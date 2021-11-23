@@ -1,4 +1,5 @@
 import csv
+from glob import glob
 from pathlib import Path
 
 from src.constants import *
@@ -24,3 +25,12 @@ def get_carved_elf_offsets(type=None):
                         carved_elfs[path] = row[2]
 
     return carved_elfs
+
+
+def get_binwalk_extracted_dirs(level=0):
+    paths = glob(f'{BASE_DIR}/{BINWALK_DIR}/*/')
+    dirs = {}
+    for path in paths:
+        dir_name = path.split('/')[-2]  # First and last token are empty strings
+        dirs[dir_name] = path
+    return dirs

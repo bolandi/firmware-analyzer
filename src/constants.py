@@ -3,6 +3,7 @@ import os
 # Docker images
 BINWALK_DOCKER_IMAGE = 'farbo/binwalk'
 CWE_CHECKER_DOCKER_IMAGE = 'fkiecad/cwe_checker'
+FIRMWALKER_DOCKER_IMAGE = 'farbo/firmwalker'
 
 # Set env variables for source and target
 BASE_DIR = os.getcwd()
@@ -19,6 +20,7 @@ DST_PATH = f'{BASE_DIR}/{DST_DIR}'
 SRC_FILES = os.listdir(SRC_PATH)
 BINWALK_DIR = f'{DST_DIR}/binwalk'
 CWE_CHECKER_DIR = f'{DST_DIR}/cwe-checker'
+FIRMWALKER_DIR = f'{DST_DIR}/firmwalker'
 BINWALK_PATH_PREFIX = '/workspace/target/binwalk/'
 
 # Log
