@@ -3,6 +3,7 @@ import logging
 import sys
 
 from src.constants import *
+from src.firmwalker.automation import run_firmwalker
 
 try:
     from common_helper_process import execute_shell_command_get_return_code
@@ -17,6 +18,8 @@ def _pull_docker_images():
     output, return_code = execute_shell_command_get_return_code(f'docker pull {BINWALK_DOCKER_IMAGE}')
     logging.info('Pulling cwe_checker docker image')
     output, return_code = execute_shell_command_get_return_code(f'docker pull {CWE_CHECKER_DOCKER_IMAGE}')
+    logging.info('Pulling firmwalker docker image')
+    output, return_code = execute_shell_command_get_return_code(f'docker pull {FIRMWALKER_DOCKER_IMAGE}')
     if return_code != 0:
         logging.error(f'Failed to pull binwalk docker image:\n{output}')
     else:
@@ -46,7 +49,8 @@ if __name__ == '__main__':
     else:
         _pull_docker_images()
         # run_binwalk()
-        run_cwe_checker()
+        # run_cwe_checker()
+        run_firmwalker()
     # TODO: run analysis
 
 '''
