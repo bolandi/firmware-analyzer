@@ -1,9 +1,11 @@
 import os
 
 # Docker images
-BINWALK_DOCKER_IMAGE = 'farbo/binwalk'
-CWE_CHECKER_DOCKER_IMAGE = 'fkiecad/cwe_checker'
-FIRMWALKER_DOCKER_IMAGE = 'farbo/firmwalker'
+BINWALK_DOCKER_IMAGE = 'farbo/binwalk:latest'
+CWE_CHECKER_DOCKER_IMAGE = 'fkiecad/cwe_checker:latest'
+FIRMWALKER_DOCKER_IMAGE = 'farbo/firmwalker:latest'
+FIRMADYNE_DOCKER_IMAGE = 'farbo/firmadyne:latest'
+FIRMADYNE_EXTRACTOR_DOCKER_IMAGE = 'ddcc/firmadyne-extractor:latest'
 
 # Set env variables for source and target
 BASE_DIR = os.getcwd()
@@ -19,9 +21,10 @@ SRC_PATH = f'{BASE_DIR}/{SRC_DIR}'
 DST_PATH = f'{BASE_DIR}/{DST_DIR}'
 SRC_FILES = os.listdir(SRC_PATH)
 BINWALK_DIR = f'{DST_DIR}/binwalk'
+BINWALK_PATH_PREFIX = '/workspace/target/binwalk/'
 CWE_CHECKER_DIR = f'{DST_DIR}/cwe-checker'
 FIRMWALKER_DIR = f'{DST_DIR}/firmwalker'
-BINWALK_PATH_PREFIX = '/workspace/target/binwalk/'
+FIRMADYNE_DIR = f'{DST_DIR}/firmadyne'
 
 # Log
 LOG_SEPARATOR = '=' * 10
