@@ -141,9 +141,14 @@ dmypy.json
 images
 target
 
-# Local shell scripts
-*.sh
-
 # Logs
 logs
+
+# Binaries
+*.zip
+*.gz
+*.tar
+*.kernel
+
+
 

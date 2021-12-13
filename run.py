@@ -6,6 +6,7 @@ from argparse import ArgumentParser
 from src.binwalk.automation import run_binwalk
 from src.constants import *
 from src.cwe_checker.automation import run_cwe_checker
+from src.firmadyne.automation import run_firmadyne
 from src.firmwalker.automation import run_firmwalker
 
 try:
@@ -34,6 +35,7 @@ def main():
     parser.add_argument('-b', '--binwalk', action='store_true', help='Runs binwalk on the firmware images')
     parser.add_argument('-cc', '--cwe_checker', action='store_true', help='Runs cwe-checker on the firmware images')
     parser.add_argument('-fw', '--firmwalker', action='store_true', help='Runs firmwalker on the firmware images')
+    parser.add_argument('-fd', '--firmadyne', action='store_true', help='Runs dynamic analysis using firmadyne on the firmware images')
     parser.add_argument('-a', '--all', action='store_true', help='Runs all supported tools on the firmware images')
 
     if (len(sys.argv) == 1):
@@ -43,13 +45,16 @@ def main():
     args = parser.parse_args()
     if args.binwalk:
         _pull_docker_images((BINWALK_DOCKER_IMAGE,))
-        run_binwalk
+        run_binwalk()
     if args.cwe_checker:
-        _pull_docker_images((CWE_CHECKER_DOCKER_IMAGE,))
-        run_cwe_checker
+        _pull_docker_images((BINWALK_DOCKER_IMAGE, CWE_CHECKER_DOCKER_IMAGE))
+        run_cwe_checker()
     if args.firmwalker:
         _pull_docker_images((FIRMWALKER_DOCKER_IMAGE,))
-        run_firmwalker
+        run_firmwalker()
+    if args.firmadyne:
+        # todo: add optional parameter to pass a single image using full path
+        run_firmadyne()
     if args.all:
         docker_images = list((BINWALK_DOCKER_IMAGE, CWE_CHECKER_DOCKER_IMAGE, FIRMWALKER_DOCKER_IMAGE))
         _pull_docker_images(docker_images)

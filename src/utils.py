@@ -1,6 +1,10 @@
+import subprocess
+
 import csv
+import logging
 from glob import glob
 from pathlib import Path
+from subprocess import Popen, PIPE, STDOUT, TimeoutExpired
 
 from src.constants import *
 
@@ -34,3 +38,4 @@ def get_binwalk_extracted_dirs(level=0):
         dir_name = path.split('/')[-2]  # First and last token are empty strings
         dirs[dir_name] = path
     return dirs
+
