@@ -3,11 +3,11 @@ import logging
 import sys
 from argparse import ArgumentParser
 
-from src.binwalk.automation import run_binwalk
+from src.static.binwalk.automation import run_binwalk
 from src.constants import *
-from src.cwe_checker.automation import run_cwe_checker
-from src.firmadyne.automation import run_firmadyne
-from src.firmwalker.automation import run_firmwalker
+from src.static.cwe_checker.automation import run_cwe_checker
+from src.dynamic.firmadyne import run_firmadyne
+from src.static.firmwalker.automation import run_firmwalker
 
 try:
     from common_helper_process import execute_shell_command_get_return_code
