@@ -7,8 +7,8 @@ from src.constants import *
 from src.utils import get_carved_elf_offsets
 
 # -j=json and -q=quiet i.e. output json without debug logs
-CWE_CHECKER_COMMAND_BASE = 'docker run --rm -v {ELF_PATH}:/input {DOCKER_IMAGE} -jq  /input'
-FILE_COMMAND_BASE = 'docker run --entrypoint /usr/bin/file --rm -v {ELF_PATH}:/input {DOCKER_IMAGE} /input'
+CWE_CHECKER_COMMAND_BASE = 'docker run --rm -v "{ELF_PATH}":/input {DOCKER_IMAGE} -jq  /input'
+FILE_COMMAND_BASE = 'docker run --entrypoint /usr/bin/file --rm -v "{ELF_PATH}":/input {DOCKER_IMAGE} /input'
 BLACK_LIST = ['vmlinux.64', 'vmlinux.32']
 
 try:
