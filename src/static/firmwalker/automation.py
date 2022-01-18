@@ -7,7 +7,7 @@ from src.constants import *
 from src.utils import get_binwalk_extracted_dirs
 
 # Run firmwalker on the parent extracted folder (immediate directory)
-FIRMWALKER_COMMAND_BASE = 'docker run --rm -v {INPUT_DIR}:/input -v {OUTPUT_DIR}:/output {DOCKER_IMAGE} /input /output/{REPORT}'
+FIRMWALKER_COMMAND_BASE = 'docker run --rm -v "{INPUT_DIR}":/input -v "{OUTPUT_DIR}":/output {DOCKER_IMAGE} /input "/output/{REPORT}"'
 
 try:
     os.mkdir(FIRMWALKER_DIR)
