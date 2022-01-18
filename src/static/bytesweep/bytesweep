@@ -1,0 +1,316 @@
+#!/usr/bin/env python3
+from bytesweep.fstree import *
+from bytesweep.file_enrichment import *
+from bytesweep.radare2 import *
+from bytesweep.extract_keys import *
+from bytesweep.strings import *
+# from bytesweep.binwalk_local import *
+from ruamel.yaml import YAML
+import shutil
+import sys
+import os
+import json
+import time
+import argparse
+import hashlib
+import datetime
+import subprocess
+
+BLUE = '\033[94m'
+GREEN = '\033[92m'
+YELLOW = '\033[93m'
+ENDC = '\033[0m'
+
+"""
+Modified script:
+- Skip extraction: it takes too long besides we already have extracted images using binwalk
+- Feed extracted image directories from binwalk step into the perform_analysis function
+- Wrtie both regular and json report
+- Pass the target report directory as runtime parameter
+"""
+
+def perform_analysis(firmware_filename, verbose, extract_dir, dt, multiprocess_workers):
+
+	do_unsafe_libs = True
+	do_string_analysis = True
+	string_analysis_threshold = 8
+	final_json_payload = {}
+	abs_extract_dir = os.path.abspath(extract_dir)
+	analysis_basedir = abs_extract_dir
+	# while True:
+	# 	analysis_basedir = os.path.join(abs_extract_dir, dt)
+	# 	if not os.path.exists(analysis_basedir):
+	# 		os.makedirs(analysis_basedir)
+	# 		break
+
+	# ==================== SKIPPING EXTRACTION ========================
+	# firmware_filepath = os.path.abspath(firmware_filename)
+	# new_firmware_filepath = os.path.join(analysis_basedir, os.path.basename(firmware_filepath))
+	# try:
+	# 	shutil.copyfile(firmware_filepath,new_firmware_filepath)
+	# except:
+	# 	final_json_payload['error'] = True
+	# 	return final_json_payload
+	# firmware_filepath = new_firmware_filepath
+
+	# fid = 0
+	# relpath = os.path.relpath(firmware_filepath, analysis_basedir)
+	# original_file = {'path':firmware_filepath,'relpath':relpath,'fid':fid,'parent_fid':fid}
+	# fid += 1
+
+	# start the recusive extraction process
+	# start_extraction = time.time()
+	# if verbose:
+	# 	print(YELLOW+"START EXTRACTION"+ENDC)
+	# binwalk_extract(original_file,fid,0,analysis_basedir,[])
+	# ==================== SKIPPING EXTRACTION ========================
+	# start recursive search here
+	tfid = 0
+	fstree = {'type':'dir','node':{'name':'root','path':analysis_basedir,'relpath':'.','fid':tfid,'parent_fid':tfid,'branch_path':[]},'files':[],'dirs':[]}
+	tfid =+ 1
+	build_fstree(fstree,analysis_basedir,tfid)
+	# extraction_time = (time.time() - start_extraction)
+	# if verbose:
+	# 	print(YELLOW+"END EXTRACTION"+ENDC)
+	# 	print(YELLOW+"EXTRACTION TIME: "+str(extraction_time)+" seconds"+ENDC)
+
+	#enrich fstree
+	start_enrichment = time.time()
+	if verbose:
+		print(YELLOW+"START ENRICHMENT"+ENDC)
+	for f in fstree_iterate(fstree):
+		enrich_file(f['node'])
+	enrichment_time = (time.time() - start_enrichment)
+	if verbose:
+		print(YELLOW+"END ENRICHMENT"+ENDC)
+		print(YELLOW+"ENRICHMENT TIME: "+str(enrichment_time)+" seconds"+ENDC)
+	
+	# run unsafe_libs module if enabled
+	start_unsafe_libs = time.time()
+	if verbose:
+		print(YELLOW+"START UNSAFE LIB ANALYSIS"+ENDC)
+	if do_unsafe_libs:
+		process_unsafe_libs(list(fstree_iterate(fstree)),multiprocess_workers)
+	unsafe_libs_time = (time.time() - start_unsafe_libs)
+	if verbose:
+		print(YELLOW+"END UNSAFE LIB ANALYSIS"+ENDC)
+		print(YELLOW+"UNSAFE LIB ANALYSIS TIME: "+str(unsafe_libs_time)+" seconds"+ENDC)
+	
+	
+	# assemble json payload and print to stdout
+	final_json_payload['fstree'] = fstree
+	
+	start_string_analysis = time.time()
+	if verbose:
+		print(YELLOW+"START STRING ANALYSIS"+ENDC)
+	if do_string_analysis:
+		final_json_payload['string_analysis'] = string_analysis(list(fstree_iterate(fstree)),string_analysis_threshold)
+	string_analysis_time = (time.time() - start_string_analysis)
+	if verbose:
+		print(YELLOW+"END STRING ANALYSIS"+ENDC)
+		print(YELLOW+"STRING ANALYSIS TIME: "+str(string_analysis_time)+" seconds"+ENDC)
+
+	# compile analysis stats
+	unique_components = []
+	unique_keys = []
+	unique_passwords = []
+	for string in final_json_payload['string_analysis']:
+		if string['type'] == 'program version' or string['type'] == 'library version':
+			component = {'type':string['type'],'version':string['match']}
+			if component not in unique_components:
+				unique_components.append(component)
+		elif string['type'] == 'crypto-keys':
+			keyhash = hashlib.sha256(string['match'].encode('utf-8')).hexdigest()
+			if keyhash not in unique_keys:
+				unique_keys.append(keyhash)
+		elif string['type'] == 'password':
+			if string['match'] not in unique_passwords:
+				unique_passwords.append(string['match'])
+
+	stats_binaries = 0
+	for f in fstree_iterate(fstree):
+		if 'unsafe_functions' in f['node']:
+			if len(f['node']['unsafe_functions']) > 0:
+				stats_binaries += 1
+
+	stats = {}
+	stats['files'] = len(list(fstree_iterate(fstree)))
+	stats['keys'] = len(unique_keys)
+	stats['passwords'] = len(unique_passwords)
+	stats['components'] = len(unique_components)
+	stats['binaries'] = stats_binaries
+	final_json_payload['stats'] = stats
+	
+	# add times
+	# final_json_payload['extraction_time'] = int(extraction_time)
+	final_json_payload['unsafe_libs_time'] = int(unsafe_libs_time)
+	final_json_payload['string_analysis_time'] = int(string_analysis_time)
+	final_json_payload['analysis_basedir'] = analysis_basedir
+	final_json_payload['error'] = False
+	return final_json_payload
+
+def normal_output(data):
+	output = "============= BYTESWEEP RESULTS =============\n"
+	output += "\n\n"
+
+	# STRING ANALYSIS
+	string_analyses = data['string_analysis']
+
+	password_hashes = {}
+	keys = {}
+	programs = {}
+	libraries = {}
+	for string_analysis in string_analyses:
+		h = hashlib.sha1(string_analysis['match'].encode('utf-8')).hexdigest()
+		if string_analysis['type'] == 'password':
+			if h not in password_hashes:
+				password_hashes[h] = []
+			password_hashes[h].append(string_analysis)
+		if string_analysis['type'] == 'crypto-keys':
+			if h not in keys:
+				keys[h] = []
+			keys[h].append(string_analysis)
+		if string_analysis['type'] == 'program version':
+			if h not in programs:
+				programs[h] = []
+			programs[h].append(string_analysis)
+		if string_analysis['type'] == 'library version':
+			if h not in libraries:
+				libraries[h] = []
+			libraries[h].append(string_analysis)
+
+	output += "============= PASSWORD HASHES (COUNT: "+str(len(password_hashes))+") =============\n"
+	for string_analysis in password_hashes.values():
+		output += GREEN+string_analysis[0]['match']+ENDC+"\n"
+		for s in string_analysis:
+			output += "   source file: "+s['path']+"\n"
+			output += "   file offset: "+str(s['offset'])+"\n"
+		output += "\n"
+
+	output += "============= KEYS (COUNT: "+str(len(keys))+") =============\n"
+	for string_analysis in keys.values():
+		output += GREEN+string_analysis[0]['match']+ENDC+"\n"
+		for s in string_analysis:
+			output += "   source file: "+s['path']+"\n"
+			output += "   file offset: "+str(s['offset'])+"\n"
+		output += "\n"
+
+	output += "============= PROGRAMS (COUNT: "+str(len(programs))+") =============\n"
+	for string_analysis in programs.values():
+		output += GREEN+"program name: "+str(string_analysis[0]['regex_name'])+ENDC+"\n"
+		output += GREEN+"version     : "+str(string_analysis[0]['match'])+ENDC+"\n"
+		for s in string_analysis:
+			output += "   source file: "+s['path']+"\n"
+			output += "   file offset: "+str(s['offset'])+"\n"
+		output += "\n"
+
+	output += "============= LIBRARIES (COUNT: "+str(len(libraries))+") =============\n"
+	for string_analysis in libraries.values():
+		output += "library name: "+str(string_analysis[0]['regex_name'])+"\n"
+		output += "     version: "+str(string_analysis[0]['match'])+"\n"
+		for s in string_analysis:
+			output += "   source file: "+s['path']+"\n"
+			output += "   file offset: "+str(s['offset'])+"\n"
+		output += "\n"
+
+	# unsafe libs
+	unsafe_functions = []
+	unsafe_function_count = 0
+	for f in fstree_iterate(data['fstree']):
+		node = f['node']
+		if 'unsafe_functions' in node:
+			unsafe_function_count += len(node['unsafe_functions'])
+	
+	output += "============= UNSAFE FUNCTION CALLS (COUNT: "+str(unsafe_function_count)+") =============\n"
+	for f in fstree_iterate(data['fstree']):
+		node = f['node']
+		if 'unsafe_functions' in node:
+			if len(node['unsafe_functions']) == 0:
+				continue
+			output += GREEN+"program:   "+node['path']+ENDC+"\n"
+			output += GREEN+"file type: "+node['magic']['mime_type']+ENDC+"\n"
+			for unsafe_function in node['unsafe_functions']:
+				output += "   function name:   "+unsafe_function['fcn_name']+"\n"
+				output += "   parent function: "+unsafe_function['parent_fcn']+"\n"
+				output += "   xref address:    "+unsafe_function['xref_address']+"\n"
+				output += "   library address: "+unsafe_function['library_address']+"\n"
+				output += "   asm:             "+unsafe_function['asm']+"\n\n"
+	return output
+
+def json_output(data):
+	return json.dumps(data)
+
+def get_cpu_threads():
+	f = open('/proc/cpuinfo','r')
+	count = 0
+	for line in f:
+		line = line.strip()
+		if line.startswith("processor\t"):
+			count += 1
+	f.close()
+	if count > 0:
+		return count
+	else:
+		return 1
+
+#MAIN
+parser = argparse.ArgumentParser()
+parser.add_argument('-oN', '--output-normal', help="Output results in normal format")
+parser.add_argument('-oJ', '--output-json', help="Output results in json format")
+parser.add_argument('-oP', '--output-pdf', help="Output results in pdf format")
+parser.add_argument('-D', '--extraction-directory', default="bytesweep-extraction", help="Extraction directory")
+parser.add_argument('-j', '--jobs', help="Number of processes to create when multiprocessing")
+parser.add_argument('-v', '--verbose', action='store_true', help="Verbose output")
+parser.add_argument('file', help="File to analyize")
+parser.add_argument('target', help="Target directory to store results")
+args = parser.parse_args()
+
+
+# if not os.path.isfile(args.file):
+# 	print(args.file+": No such file\n")
+# 	parser.print_help()
+# 	sys.exit(1)
+
+threads = 1
+if args.jobs:
+	threads = args.jobs
+else:
+	threads = get_cpu_threads()
+
+extraction_directory = os.path.normpath(args.extraction_directory)
+dt = datetime.datetime.now().isoformat()
+data = perform_analysis(args.file, args.verbose, extraction_directory, dt, threads)
+
+normal_output = normal_output(data)
+print("\n"+normal_output)
+
+
+# GET OUTPUTS READY
+# TODO: check if path exists
+# cannot create 'FULLPATH': No such file or directory
+normal_output_nocolor = normal_output
+normal_output_nocolor = normal_output_nocolor.replace(BLUE,"")
+normal_output_nocolor = normal_output_nocolor.replace(GREEN,"")
+normal_output_nocolor = normal_output_nocolor.replace(YELLOW,"")
+normal_output_nocolor = normal_output_nocolor.replace(ENDC,"")
+json_output = json_output(data)
+
+if not os.path.exists(args.target+"/"+dt):
+	os.makedirs(args.target+"/"+dt)
+
+# if args.output_normal:
+# 	f = open(args.output_normal,'w')
+# 	f.write(normal_output_nocolor)
+# 	f.close()
+f = open(args.target+"/"+dt+"/results.txt",'w+')
+f.write(normal_output_nocolor)
+f.close()
+
+# if args.output_json:
+# 	f = open(args.output_json,'w')
+# 	f.write(json_output)
+# 	f.close()
+f = open(args.target+"/"+dt+"/results.json",'w+')
+f.write(json_output)
+f.close()
+

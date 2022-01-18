@@ -140,6 +140,7 @@ dmypy.json
 # Temp files
 images
 target
+bak
 
 # Logs
 logs

@@ -6,6 +6,7 @@ from argparse import ArgumentParser
 from src.constants import *
 from src.dynamic.firmadyne.automation import run_firmadyne
 from src.static.binwalk.automation import run_binwalk
+from src.static.bytesweep.automation import run_bytesweep
 from src.static.cwe_checker.automation import run_cwe_checker
 from src.static.firmwalker.automation import run_firmwalker
 
@@ -27,6 +28,7 @@ def main():
     parser.add_argument('-fw', '--firmwalker', action='store_true', help='Runs firmwalker on the firmware images')
     parser.add_argument('-fd', '--firmadyne', action='store_true',
                         help='Runs dynamic analysis using firmadyne on the firmware images')
+    parser.add_argument('-bs', '--bytesweep', action='store_true', help='Runs bytesweep analysis on extracted images')
     parser.add_argument('-a', '--all', action='store_true', help='Runs all supported tools on the firmware images')
 
     if (len(sys.argv) == 1):
@@ -43,6 +45,8 @@ def main():
     if args.firmadyne:
         # todo: add optional parameter to pass a single image using full path
         run_firmadyne()
+    if args.bytesweep:
+        run_bytesweep()
     if args.all:
         # todo: run all analysis tools in proper order
         logging.error("Not implemented")
