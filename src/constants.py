@@ -6,7 +6,8 @@ CWE_CHECKER_DOCKER_IMAGE = 'fkiecad/cwe_checker:latest'
 FIRMWALKER_DOCKER_IMAGE = 'farbo/firmwalker:latest'
 FIRMADYNE_DOCKER_IMAGE = 'farbo/firmadyne:latest'
 FIRMADYNE_EXTRACTOR_DOCKER_IMAGE = 'ddcc/firmadyne-extractor:latest'
-BYTESWEEP_DOCKER_IMAGE = 'farbo/bytesweep'
+BYTESWEEP_DOCKER_IMAGE = 'farbo/bytesweep:latest'
+BANG_DOCKER_IMAGE = 'farbo/bang:latest'
 
 # Set env variables for source and target
 BASE_DIR = os.getcwd()
@@ -27,6 +28,7 @@ CWE_CHECKER_DIR = f'{DST_DIR}/cwe-checker'
 FIRMWALKER_DIR = f'{DST_DIR}/firmwalker'
 FIRMADYNE_DIR = f'{DST_DIR}/firmadyne'
 BYTESWEEP_DIR = f'{DST_DIR}/bytesweep'
+BANG_DIR = f'{DST_DIR}/bang'
 
 # Log
 LOG_SEPARATOR = '=' * 10
