@@ -9,6 +9,7 @@ from src.static.binwalk.automation import run_binwalk
 from src.static.bytesweep.automation import run_bytesweep
 from src.static.cwe_checker.automation import run_cwe_checker
 from src.static.firmwalker.automation import run_firmwalker
+from src.static.binaryanalysis_ng.automation import run_bang
 
 try:
     from common_helper_process import execute_shell_command_get_return_code
@@ -29,6 +30,7 @@ def main():
     parser.add_argument('-fd', '--firmadyne', action='store_true',
                         help='Runs dynamic analysis using firmadyne on the firmware images')
     parser.add_argument('-bs', '--bytesweep', action='store_true', help='Runs bytesweep analysis on extracted images')
+    parser.add_argument('-bang', action='store_true', help='Run Binary Analysis Next Gen on the firmware images')
     parser.add_argument('-a', '--all', action='store_true', help='Runs all supported tools on the firmware images')
 
     if (len(sys.argv) == 1):
@@ -47,6 +49,8 @@ def main():
         run_firmadyne()
     if args.bytesweep:
         run_bytesweep()
+    if args.bang:
+        run_bang()
     if args.all:
         # todo: run all analysis tools in proper order
         logging.error("Not implemented")
