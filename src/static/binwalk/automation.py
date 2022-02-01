@@ -29,7 +29,7 @@ def _extract():
         # todo: skip over directories in source folder
         logging.info(f'Extracting {file}')
         # todo: fix hex in csv (needs a PR to binwalk repo) and target permission
-        cmd = f'{COMMAND_BASE} -C {DST_DIR}/binwalk -eMr {SRC_DIR}/{file} --log={BINWALK_DIR}/{file}.log -c'
+        cmd = f'{COMMAND_BASE} -C "{DST_DIR}/binwalk" -eMr "{SRC_DIR}/{file}" --log="{BINWALK_DIR}/{file}.log" -c'
         output, return_code = execute_shell_command_get_return_code(cmd)
 
         result = 'SUCCESS' if return_code == 0 else 'FAILED'
@@ -63,7 +63,7 @@ def entropy(file=None, target_dir=None):
     """
     if file:
         logging.info(f'Calculating entropy for {file}')
-        cmd = f'{COMMAND_BASE} -EJ {SRC_DIR}/{file} --log={BINWALK_DIR}/{file}.entropy -c'
+        cmd = f'{COMMAND_BASE} -EJ "{SRC_DIR}/{file}" --log="{BINWALK_DIR}/{file}.entropy" -c'
         output, return_code = execute_shell_command_get_return_code(
             cmd)
         if return_code == 0:
@@ -76,7 +76,7 @@ def entropy(file=None, target_dir=None):
         if path.exists(f'{BINWALK_DIR}/{file}.entropy'):
             logging.info(f'Entropy for {file} already calculated.')
             continue
-        cmd = f'{COMMAND_BASE} -EJ {SRC_DIR}/{file} --log={BINWALK_DIR}/{file}.entropy --csv'
+        cmd = f'{COMMAND_BASE} -EJ "{SRC_DIR}/{file}" --log="{BINWALK_DIR}/{file}.entropy" --csv'
         logging.info(f'Calculating entropy for {file}')
         output, return_code = execute_shell_command_get_return_code(
             cmd)

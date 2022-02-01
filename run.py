@@ -24,7 +24,7 @@ def print_usage():
 def main():
     logging.basicConfig(format='%(asctime)-15s %(module)s: %(message)s', stream=sys.stdout, level=logging.DEBUG)
     parser = ArgumentParser()
-    parser.add_argument('-b', '--binwalk', action='store_true', help='Runs binwalk on the firmware images')
+    parser.add_argument('-bw', '--binwalk', action='store_true', help='Runs binwalk on the firmware images')
     parser.add_argument('-cc', '--cwe_checker', action='store_true', help='Runs cwe-checker on the firmware images')
     parser.add_argument('-fw', '--firmwalker', action='store_true', help='Runs firmwalker on the firmware images')
     parser.add_argument('-fd', '--firmadyne', action='store_true',
