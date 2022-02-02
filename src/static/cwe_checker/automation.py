@@ -1,3 +1,5 @@
+import sys
+
 import json
 import logging
 
@@ -19,6 +21,9 @@ except FileExistsError:
 
 def _scan_binwalk_carved_elfs():
     carved_elfs = (get_carved_elf_offsets())
+    if len(carved_elfs) == 0:
+        logging.info(f'No extracted image found under {BINWALK_DIR}.\nTry running binwalk first')
+        sys.exit(0)
 
     cwd = os.getcwd() + '/'
     # Output from the scan is a single JSON with mapping from ELF paths to an array of CWE findings for that ELF

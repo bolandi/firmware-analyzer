@@ -1,4 +1,5 @@
 import os.path
+import sys
 
 import logging
 import shutil
@@ -21,7 +22,8 @@ except FileExistsError:
 def run_bytesweep(extraction_dir=None):
     dirs = get_binwalk_extracted_dirs(format=True)
     if len(dirs) == 0:
-        logging.info(f'No extracted directory found. Try running binwalk first')
+        logging.info(f'No extracted image found under {BINWALK_DIR}.\nTry running binwalk first')
+        sys.exit(0)
 
     for img_name, extracted_path in dirs.items():
         logging.info(f'Running bytesweep analysis on {extracted_path}')

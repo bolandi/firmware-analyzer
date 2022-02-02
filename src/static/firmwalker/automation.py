@@ -1,3 +1,5 @@
+import sys
+
 import logging
 from pathlib import Path
 
@@ -18,6 +20,9 @@ except FileExistsError:
 def _scan_binwalk_extracted_filesystems():
     # For each dir in dirs dictionary: Key= Directory name - Value= Directory path
     dirs = get_binwalk_extracted_dirs()
+    if len(dirs) == 0:
+        logging.info(f'No extracted image found under {BINWALK_DIR}.\nTry running binwalk first')
+        sys.exit(0)
 
     for name, path in dirs.items():
         logging.info(f'Running firmwalker on {path}')

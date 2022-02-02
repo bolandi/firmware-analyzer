@@ -1,3 +1,5 @@
+import sys
+
 import logging
 import shutil
 from shutil import copyfile
@@ -22,6 +24,10 @@ def _extract():
     - Extracted carved files at target/binwalk/_{file}
     - Signature analysis in CSV foramt: {file}.log
     """
+    if len(SRC_FILES) == 0:
+        logging.info(f"No images found under {SRC_PATH}")
+        sys.exit(0)
+
     for file in SRC_FILES:
         if path.exists(f'{BINWALK_DIR}/{file}.log'):
             logging.info(f'{file} already extracted.')
@@ -73,6 +79,10 @@ def entropy(file=None, target_dir=None):
         return return_code
 
     for file in SRC_FILES:
+        if len(SRC_FILES) == 0:
+            logging.info(f"No images found under {SRC_PATH}")
+            sys.exit(0)
+
         if path.exists(f'{BINWALK_DIR}/{file}.entropy'):
             logging.info(f'Entropy for {file} already calculated.')
             continue
