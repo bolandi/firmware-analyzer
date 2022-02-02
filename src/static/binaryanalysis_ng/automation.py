@@ -1,4 +1,5 @@
 import os.path
+import sys
 from os import path
 
 import logging
@@ -17,6 +18,10 @@ except FileExistsError:
 
 
 def run_bang():
+    if len(SRC_FILES) == 0:
+        logging.info(f"No images found under {SRC_PATH}")
+        sys.exit(0)
+
     for file in SRC_FILES:
         src_img = path.join(SRC_PATH, file)
         target_dir = path.join(BASE_DIR, BANG_DIR, file)

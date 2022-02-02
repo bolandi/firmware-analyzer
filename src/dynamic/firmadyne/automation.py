@@ -1,3 +1,5 @@
+import sys
+
 import logging
 import shutil
 from common_helper_process import execute_shell_command_get_return_code
@@ -75,6 +77,10 @@ def run_firmadyne(image_path=None):
             return 1
 
     # Run emulation for all the images found in images directory
+    if len(SRC_FILES) == 0:
+        logging.info(f"No images found under {SRC_PATH}")
+        sys.exit(0)
+
     for file in SRC_FILES:
         working_dir, rootfs = _extract(os.path.join(SRC_PATH, file))
         if len(working_dir) == 0 or len(rootfs) == 0:
