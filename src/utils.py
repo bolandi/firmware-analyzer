@@ -31,7 +31,7 @@ def get_carved_elf_offsets(type=None):
     return carved_elfs
 
 
-def get_binwalk_extracted_dirs(level=0, format=False):
+def get_binwalk_extracted_dirs(format=False):
     paths = glob(f'{BASE_DIR}/{BINWALK_DIR}/*/')
     dirs = {}
     for path in paths:
@@ -44,3 +44,10 @@ def get_binwalk_extracted_dirs(level=0, format=False):
         dirs[dir_name] = path
     return dirs
 
+def get_bang_extracted_dirs():
+    paths = glob(f'{BASE_DIR}/{BANG_DIR}/*/')
+    dirs = {}
+    for path in paths:
+        dir_name = path.split('/')[-2]  # First and last token are empty strings
+        dirs[dir_name] = path
+    return dirs

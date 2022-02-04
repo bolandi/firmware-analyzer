@@ -8,6 +8,7 @@ FIRMADYNE_DOCKER_IMAGE = 'farbo/firmadyne:latest'
 FIRMADYNE_EXTRACTOR_DOCKER_IMAGE = 'ddcc/firmadyne-extractor:latest'
 BYTESWEEP_DOCKER_IMAGE = 'farbo/bytesweep:latest'
 BANG_DOCKER_IMAGE = 'farbo/bang:latest'
+CVEBINTOOL_DOCKER_IMAGE = 'farbo/cve_bin_tool:latest'
 
 # Set env variables for source and target
 BASE_DIR = os.getcwd()
@@ -29,6 +30,7 @@ FIRMWALKER_DIR = f'{DST_DIR}/firmwalker'
 FIRMADYNE_DIR = f'{DST_DIR}/firmadyne'
 BYTESWEEP_DIR = f'{DST_DIR}/bytesweep'
 BANG_DIR = f'{DST_DIR}/bang'
+CVEBINTOOL_DIR = f'{DST_DIR}/cvebintool'
 
 # Log
 LOG_SEPARATOR = '=' * 10
