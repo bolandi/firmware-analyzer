@@ -34,14 +34,14 @@ def run_bytesweep(extraction_dir=None):
             logging.info(f'The target directory already exists, skipping analysis for {target_dir}')
             continue
 
-        # # Source image file is used for final report, it's not re-extracted
-        # img_file = os.path.join(SRC_PATH, img_name)
+        # Source image file is used for final report, it's not re-extracted
         cmd = BYTESWEEP_CMD_BASE.format(INPUT_DIR=extracted_path, OUTPUT_DIR=target_dir,
                                         DOCKER_IMAGE=BYTESWEEP_DOCKER_IMAGE)
         output, return_code = execute_shell_command_get_return_code(cmd)
         if return_code != 0:
             logging.info('FAILED')
             logging.debug(output)
+            os.rmdir(target_dir)
         else:
             logging.info(f'SUCCESS: Results written to {target_dir}')
 

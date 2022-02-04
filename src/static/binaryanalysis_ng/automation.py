@@ -39,5 +39,6 @@ def run_bang():
         if return_code != 0:
             logging.info('FAILED')
             logging.debug(output)
+            os.rmdir(target_dir)
         else:
             logging.info(f'SUCCESS: Results written to {target_dir}')

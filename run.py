@@ -7,6 +7,7 @@ from src.constants import *
 from src.dynamic.firmadyne.automation import run_firmadyne
 from src.static.binwalk.automation import run_binwalk
 from src.static.bytesweep.automation import run_bytesweep
+from src.static.cve_bin_tool.automation import run_cve_bin_tool
 from src.static.cwe_checker.automation import run_cwe_checker
 from src.static.firmwalker.automation import run_firmwalker
 from src.static.binaryanalysis_ng.automation import run_bang
@@ -31,6 +32,7 @@ def main():
                         help='Runs dynamic analysis using firmadyne on the firmware images')
     parser.add_argument('-bs', '--bytesweep', action='store_true', help='Runs bytesweep analysis on extracted images')
     parser.add_argument('-bang', action='store_true', help='Run Binary Analysis Next Gen on the firmware images')
+    parser.add_argument('-cbt', action='store_true', help='Run cv-bin-tool on extracted images')
     parser.add_argument('-a', '--all', action='store_true', help='Runs all supported tools on the firmware images')
 
     if (len(sys.argv) == 1):
@@ -51,6 +53,8 @@ def main():
         run_bytesweep()
     if args.bang:
         run_bang()
+    if args.cbt:
+        run_cve_bin_tool()
     if args.all:
         # todo: run all analysis tools in proper order
         logging.error("Not implemented")
