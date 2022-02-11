@@ -23,7 +23,7 @@ def print_usage():
 
 
 def main():
-    logging.basicConfig(format='%(asctime)-15s %(module)s: %(message)s', stream=sys.stdout, level=logging.DEBUG)
+    logging.basicConfig(format='%(asctime)-15s:%(levelname)s %(funcName)s: %(message)s', stream=sys.stdout, level=logging.INFO)
     parser = ArgumentParser()
     parser.add_argument('-bw', '--binwalk', action='store_true', help='Runs binwalk on the firmware images')
     parser.add_argument('-cc', '--cwe_checker', action='store_true', help='Runs cwe-checker on the firmware images')
@@ -34,12 +34,15 @@ def main():
     parser.add_argument('-bang', action='store_true', help='Run Binary Analysis Next Gen on the firmware images')
     parser.add_argument('-cbt', action='store_true', help='Run cv-bin-tool on extracted images')
     parser.add_argument('-a', '--all', action='store_true', help='Runs all supported tools on the firmware images')
+    parser.add_argument('-v', '--verbose', action='store_true', help='Print debug logs')
 
     if (len(sys.argv) == 1):
         parser.print_help(sys.stderr)
         sys.exit(1)
 
     args = parser.parse_args()
+    if args.verbose:
+        logging.getLogger().setLevel(logging.DEBUG)
     if args.binwalk:
         run_binwalk()
     if args.cwe_checker:
@@ -58,6 +61,7 @@ def main():
     if args.all:
         # todo: run all analysis tools in proper order
         logging.error("Not implemented")
+
 
 if __name__ == '__main__':
     main()
