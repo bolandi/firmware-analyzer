@@ -1,3 +1,5 @@
+import time
+
 import sys
 
 import logging
@@ -114,4 +116,8 @@ def cleanup():
 
 def run_binwalk():
     entropy()
+    # start the recusive extraction process
+    start_extraction = time.time()
     _extract()
+    extraction_time = (time.time() - start_extraction)
+    logging.debug('Extraction time: {:.2f}'.format(extraction_time))

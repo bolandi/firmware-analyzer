@@ -1,4 +1,6 @@
 import os.path
+import time
+
 import sys
 from os import path
 
@@ -34,6 +36,7 @@ def run_bang():
         cmd = BANG_COMMAND_BASE.format(INPUT_IMG=src_img, OUTPUT_DIR=target_dir,
                                        IMG_NAME=file, DOCKER_IMAGE=BANG_DOCKER_IMAGE)
 
+        start_extraction = time.time()
         output, return_code = execute_shell_command_get_return_code(cmd)
 
         if return_code != 0:
@@ -41,4 +44,6 @@ def run_bang():
             logging.debug(output)
             os.rmdir(target_dir)
         else:
+            extraction_time = (time.time() - start_extraction)
+            logging.debug('Extraction time: {:.2f}'.format(extraction_time))
             logging.info(f'SUCCESS: Results written to {target_dir}')
