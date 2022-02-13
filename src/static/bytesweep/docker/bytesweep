@@ -278,7 +278,8 @@ else:
 	threads = get_cpu_threads()
 
 extraction_directory = os.path.normpath(args.extraction_directory)
-dt = datetime.datetime.now().isoformat()
+# dt = datetime.datetime.now().isoformat()
+dt = datetime.datetime.now().date().isoformat()
 data = perform_analysis(args.file, args.verbose, extraction_directory, dt, threads)
 
 normal_output = normal_output(data)
