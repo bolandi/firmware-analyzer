@@ -1,0 +1,67 @@
+[
+    {
+        "vendor": "gnu",
+        "product": "gcc",
+        "version": "4.1.2",
+        "cve_number": "CVE-2002-2439",
+        "severity": "HIGH",
+        "score": "7.8",
+        "cvss_version": "3",
+        "cvss_vector": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H",
+        "paths": "/input/Drivers/VMWare/ESXi4.1/_vmware-esx-drivers-net-tn4022-400.1.1.6.8-1OEM.x86_64.vib.extracted/_42A.extracted/usr/lib/vmware/vmkmod/tn4022.o",
+        "remarks": "NewFound",
+        "comments": ""
+    },
+    {
+        "vendor": "gnu",
+        "product": "gcc",
+        "version": "4.1.2",
+        "cve_number": "CVE-2015-5276",
+        "severity": "MEDIUM",
+        "score": "5",
+        "cvss_version": "2",
+        "cvss_vector": "AV:N/AC:L/Au:N/C:P/I:N/A:N",
+        "paths": "/input/Drivers/VMWare/ESXi4.1/_vmware-esx-drivers-net-tn4022-400.1.1.6.8-1OEM.x86_64.vib.extracted/_42A.extracted/usr/lib/vmware/vmkmod/tn4022.o",
+        "remarks": "NewFound",
+        "comments": ""
+    },
+    {
+        "vendor": "gnu",
+        "product": "gcc",
+        "version": "4.1.2",
+        "cve_number": "CVE-2018-12886",
+        "severity": "HIGH",
+        "score": "8.1",
+        "cvss_version": "3",
+        "cvss_vector": "CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H",
+        "paths": "/input/Drivers/VMWare/ESXi4.1/_vmware-esx-drivers-net-tn4022-400.1.1.6.8-1OEM.x86_64.vib.extracted/_42A.extracted/usr/lib/vmware/vmkmod/tn4022.o",
+        "remarks": "NewFound",
+        "comments": ""
+    },
+    {
+        "vendor": "gnu",
+        "product": "gcc",
+        "version": "4.1.2",
+        "cve_number": "CVE-2019-15847",
+        "severity": "HIGH",
+        "score": "7.5",
+        "cvss_version": "3",
+        "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
+        "paths": "/input/Drivers/VMWare/ESXi4.1/_vmware-esx-drivers-net-tn4022-400.1.1.6.8-1OEM.x86_64.vib.extracted/_42A.extracted/usr/lib/vmware/vmkmod/tn4022.o",
+        "remarks": "NewFound",
+        "comments": ""
+    },
+    {
+        "vendor": "gnu",
+        "product": "gcc",
+        "version": "4.1.2",
+        "cve_number": "CVE-2021-37322",
+        "severity": "HIGH",
+        "score": "7.8",
+        "cvss_version": "3",
+        "cvss_vector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H",
+        "paths": "/input/Drivers/VMWare/ESXi4.1/_vmware-esx-drivers-net-tn4022-400.1.1.6.8-1OEM.x86_64.vib.extracted/_42A.extracted/usr/lib/vmware/vmkmod/tn4022.o",
+        "remarks": "NewFound",
+        "comments": ""
+    }
+]

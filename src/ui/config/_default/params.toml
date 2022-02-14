@@ -1,0 +1,64 @@
+logo = true
+logoText = "Firmware Analyzer v.1.0"
+logoType = "short" # long, short
+description = "The ZDoc theme for Hugo example site."
+
+themeOptions = ["light", "dark"]
+
+useFaviconGenerator = true # https://www.favicon-generator.org/
+
+enableTocSwitch = true
+enableLandingBackground = false
+enableSearch = true
+enableSearchHighlight = true
+#enableLangChange = true
+enableDarkMode = true
+enableBreadcrumb = true
+enableBlogBreadcrumb = true
+enableEditBtn = false
+enableToc = true
+enableMenu = true
+enableNavbar = true
+enableFooter = true
+showPoweredBy = true
+
+tocLevels = ["h2", "h3", "h4"]
+paginateWindow = 1
+taxoPaginate = 13
+taxoGroupByDate = "2006" # "2006-01": group by month, "2006": group by year
+
+github = "https://github.com/bolandi/firmware-analyzer"
+
+# comment
+enableComment = false
+disqus_shortname = ""
+commento = false
+
+[gitment]          # Gitment is a comment system based on GitHub issues. see https://github.com/imsun/gitment
+  owner = ""              # Your GitHub ID
+  repo = ""               # The repo to store comments
+  clientId = ""           # Your client ID
+  clientSecret = ""       # Your client secret
+
+[utterances]       # https://utteranc.es/
+  owner = ""              # Your GitHub ID
+  repo = ""               # The repo to store comments
+
+[gitalk]           # Gitalk is a comment system based on GitHub issues. see https://github.com/gitalk/gitalk
+  owner = ""              # Your GitHub ID
+  repo = ""               # The repo to store comments
+  clientId = ""           # Your client ID
+  clientSecret = ""       # Your client secret
+
+[changyan]
+  changyanAppid = ""        # Changyan app id             # 畅言
+  changyanAppkey = ""       # Changyan app key
+
+[livere]
+  livereUID = ""            # LiveRe UID                  # 来必力
+
+# Isso: https://posativ.org/isso/
+[isso]
+  enable = false
+  scriptSrc = "" # "https://isso.example.com/js/embed.min.js"
+  dataAttrs = "" # "data-isso='https://isso.example.com' data-isso-require-author='true'"
