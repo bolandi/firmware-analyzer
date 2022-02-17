@@ -1,3 +1,5 @@
+import os.path
+
 import subprocess
 
 import csv
@@ -31,18 +33,25 @@ def get_carved_elf_offsets(type=None):
     return carved_elfs
 
 
-def get_binwalk_extracted_dirs(format=False):
-    paths = glob(f'{BASE_DIR}/{BINWALK_DIR}/*/')
-    dirs = {}
+def get_binwalk_artifacts(dir_only=True):
+    paths = glob(os.path.join(BASE_DIR, BINWALK_DIR, '*/'))
+    artifacts = {}
     for path in paths:
         dir_name = path.split('/')[-2]  # First and last token are empty strings
-        if format:
-            prefix = '_'
-            suffix = '.extracted'
-            dir_name = dir_name[dir_name.startswith(prefix) and len(prefix):]
-            dir_name = dir_name[dir_name.endswith(suffix) and 0:-len(suffix)]
-        dirs[dir_name] = path
-    return dirs
+        # Rename to orignal image name
+        prefix = '_'
+        suffix = '.extracted'
+        dir_name = dir_name[dir_name.startswith(prefix) and len(prefix):]
+        dir_name = dir_name[dir_name.endswith(suffix) and 0:-len(suffix)]
+        artifacts[dir_name] = path
+
+    # Include binary images that are not extractable i.e. not a directory
+    if dir_only == False:
+        for image in SRC_FILES:
+            if image not in artifacts:
+                artifacts[image] = os.path.join(BASE_DIR ,BINWALK_DIR, image)
+
+    return artifacts
 
 def get_bang_extracted_dirs():
     paths = glob(f'{BASE_DIR}/{BANG_DIR}/*/')

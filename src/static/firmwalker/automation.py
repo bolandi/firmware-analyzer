@@ -6,7 +6,7 @@ from pathlib import Path
 from common_helper_process import execute_shell_command_get_return_code
 
 from src.constants import *
-from src.utils import get_binwalk_extracted_dirs
+from src.utils import get_binwalk_artifacts
 
 # Run firmwalker on the parent extracted folder (immediate directory)
 FIRMWALKER_COMMAND_BASE = 'docker run --rm -v "{INPUT_DIR}":"/{IMG_NAME}" -v "{OUTPUT_DIR}":/output ' \
@@ -20,7 +20,7 @@ except FileExistsError:
 
 def _scan_binwalk_extracted_filesystems():
     # For each dir in dirs dictionary: Key= Directory name - Value= Directory path
-    dirs = get_binwalk_extracted_dirs(format=True)
+    dirs = get_binwalk_artifacts()
     if len(dirs) == 0:
         logging.info(f'No extracted image found under {BINWALK_DIR}.\nTry running binwalk first')
         sys.exit(0)
