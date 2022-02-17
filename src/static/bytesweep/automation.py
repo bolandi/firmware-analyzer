@@ -7,7 +7,7 @@ from common_helper_process import execute_shell_command_get_return_code
 from src.constants import *
 
 # Input already extracted image, write reports in specified output directory
-from src.utils import get_binwalk_extracted_dirs
+from src.utils import get_binwalk_artifacts
 
 BYTESWEEP_CMD_BASE = 'docker run --rm -v "{INPUT_DIR}":"/{IMG_NAME}" '\
                      '-v "{OUTPUT_DIR}":/output {DOCKER_IMAGE} -v '\
@@ -20,12 +20,12 @@ except FileExistsError:
 
 
 def run_bytesweep(extraction_dir=None):
-    dirs = get_binwalk_extracted_dirs(format=True)
-    if len(dirs) == 0:
+    artifacts = get_binwalk_artifacts(dir_only=False)
+    if len(artifacts) == 0:
         logging.info(f'No extracted image found under {BINWALK_DIR}.\nTry running binwalk first')
         sys.exit(0)
 
-    for img_name, extracted_path in dirs.items():
+    for img_name, extracted_path in artifacts.items():
         logging.info(f'Running bytesweep analysis on {extracted_path}')
         target_dir = os.path.join(BASE_DIR, BYTESWEEP_DIR, img_name)
         if not os.path.exists(target_dir):

@@ -6,7 +6,7 @@ import logging
 from common_helper_process import execute_shell_command_get_return_code
 
 from src.constants import *
-from src.utils import get_bang_extracted_dirs, get_binwalk_extracted_dirs
+from src.utils import get_bang_extracted_dirs, get_binwalk_artifacts
 
 CVEBINTOOL_COMMAND_BASE = 'docker run --rm -v "{INPUT_DIR}":"/{IMG_NAME}" ' \
                     '-v "{OUTPUT_DIR}":/output {DOCKER_IMAGE} ' \
@@ -18,12 +18,12 @@ except FileExistsError:
     pass
 
 def run_cve_bin_tool():
-    binwalk_dirs = get_binwalk_extracted_dirs(format=True)
-    if len(binwalk_dirs) == 0:
+    artifacts = get_binwalk_artifacts(dir_only=False)
+    if len(artifacts) == 0:
         logging.info(f'No extracted image found under {BINWALK_DIR}.\nTry running binwalk first')
         sys.exit(0)
 
-    for img_name, extracted_path in binwalk_dirs.items():
+    for img_name, extracted_path in artifacts.items():
         logging.info(f'Running cve-bin-tool analysis on {extracted_path}')
         target_dir = os.path.join(BASE_DIR, CVEBINTOOL_DIR, img_name)
         if not os.path.exists(target_dir):
