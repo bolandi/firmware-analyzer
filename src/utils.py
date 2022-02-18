@@ -37,6 +37,9 @@ def get_binwalk_artifacts(dir_only=True):
     paths = glob(os.path.join(BASE_DIR, BINWALK_DIR, '*/'))
     artifacts = {}
     for path in paths:
+        # Skip empty directories
+        if len(os.listdir(path)) == 0:
+            continue
         dir_name = path.split('/')[-2]  # First and last token are empty strings
         # Rename to orignal image name
         prefix = '_'
