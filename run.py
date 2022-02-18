@@ -2,17 +2,16 @@
 import logging
 import sys
 from argparse import ArgumentParser
-
 from src.constants import *
-from src.dynamic.firmadyne.automation import run_firmadyne
-from src.static.binwalk.automation import run_binwalk
-from src.static.bytesweep.automation import run_bytesweep
-from src.static.cve_bin_tool.automation import run_cve_bin_tool
-from src.static.cwe_checker.automation import run_cwe_checker
-from src.static.firmwalker.automation import run_firmwalker
-from src.static.binaryanalysis_ng.automation import run_bang
 
 try:
+    from src.dynamic.firmadyne.automation import run_firmadyne
+    from src.static.binwalk.automation import run_binwalk
+    from src.static.bytesweep.automation import run_bytesweep
+    from src.static.cve_bin_tool.automation import run_cve_bin_tool
+    from src.static.cwe_checker.automation import run_cwe_checker
+    from src.static.firmwalker.automation import run_firmwalker
+    from src.static.binaryanalysis_ng.automation import run_bang
     from common_helper_process import execute_shell_command_get_return_code
 except ImportError:
     os.system('pip3 install -r requirements.txt')
