@@ -59,9 +59,12 @@ def main():
     if args.cbt:
         run_cve_bin_tool()
     if args.all:
-        # todo: run all analysis tools in proper order
-        logging.error("Not implemented")
-
+        run_binwalk()
+        run_firmwalker()
+        run_cwe_checker()
+        run_bytesweep()
+        run_cve_bin_tool()
+        run_firmadyne()
 
 if __name__ == '__main__':
     main()
