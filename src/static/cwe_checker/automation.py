@@ -1,3 +1,5 @@
+import time
+
 import sys
 
 import json
@@ -48,7 +50,7 @@ def _scan_binwalk_carved_elfs():
             output, return_code = execute_shell_command_get_return_code(cmd)
             if return_code != 0:
                 logging.info('FAILED')
-                # logging.debug(f'Return code = {return_code} - Output= {output}')
+                logging.debug(output)
             else:
                 logging.info('SUCCESS')
                 logging.debug(f'Return code = {return_code} - Output= {output}')
@@ -58,9 +60,12 @@ def _scan_binwalk_carved_elfs():
         logging.info('No results found')
         return
 
-    with open(f'{BASE_DIR}/{CWE_CHECKER_DIR}/results_for_binwalk_artifacts.json', 'w') as file:
-        json.dump(log_file, file)
-
+    try:
+        report_name = time.strftime(DATE_TIME_FORMAT)
+        with open(os.path.join(BASE_DIR, CWE_CHECKER_DIR, report_name), 'w') as file:
+            json.dump(log_file, file)
+    except Exception:
+        logging.info(log_file)
 
 def run_cwe_checker():
     _scan_binwalk_carved_elfs()
