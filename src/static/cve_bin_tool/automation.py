@@ -8,9 +8,9 @@ from common_helper_process import execute_shell_command_get_return_code
 from src.constants import *
 from src.utils import get_bang_extracted_dirs, get_binwalk_artifacts
 
-CVEBINTOOL_COMMAND_BASE = 'docker run --rm -v "{INPUT_DIR}":"/{IMG_NAME}" ' \
+CVEBINTOOL_COMMAND_BASE = 'docker run --rm -v "{INPUT_DIR}":/input ' \
                     '-v "{OUTPUT_DIR}":/output {DOCKER_IMAGE} ' \
-                    '"/{IMG_NAME}" /output'
+                    '/input /output'
 
 try:
     os.mkdir(CVEBINTOOL_DIR)
@@ -33,7 +33,7 @@ def run_cve_bin_tool():
             continue
 
         cmd = CVEBINTOOL_COMMAND_BASE.format(INPUT_DIR=extracted_path, OUTPUT_DIR=target_dir,
-                                        DOCKER_IMAGE=CVEBINTOOL_DOCKER_IMAGE, IMG_NAME=img_name)
+                                        DOCKER_IMAGE=CVEBINTOOL_DOCKER_IMAGE)
 
         output, return_code = execute_shell_command_get_return_code(cmd)
         if return_code != 0:
