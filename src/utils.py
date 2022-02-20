@@ -40,7 +40,7 @@ def get_binwalk_artifacts(dir_only=True):
         # Skip empty directories
         if len(os.listdir(path)) == 0:
             continue
-        dir_name = path.split('/')[-2]  # First and last token are empty strings
+        dir_name = path.split(os.path.sep)[-2]  # First and last token are empty strings
         # Rename to orignal image name
         prefix = '_'
         suffix = '.extracted'

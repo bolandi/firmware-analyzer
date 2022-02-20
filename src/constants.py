@@ -31,6 +31,8 @@ FIRMADYNE_DIR = f'{DST_DIR}/firmadyne'
 BYTESWEEP_DIR = f'{DST_DIR}/bytesweep'
 BANG_DIR = f'{DST_DIR}/bang'
 CVEBINTOOL_DIR = f'{DST_DIR}/cvebintool'
+STATS_DIR = f'{DST_DIR}/stats'
+CVE_STATS_FILE = f'{STATS_DIR}/cve-stats.csv'
 
 # Log
 LOG_SEPARATOR = '=' * 10
