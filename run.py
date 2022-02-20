@@ -2,6 +2,8 @@
 import logging
 import sys
 from argparse import ArgumentParser
+
+from src.analyses.stats import gen_cve_summary
 from src.constants import *
 
 try:
@@ -31,9 +33,10 @@ def main():
                         help='Runs dynamic analysis using firmadyne on the firmware images')
     parser.add_argument('-bs', '--bytesweep', action='store_true', help='Runs bytesweep analysis on extracted images')
     parser.add_argument('-bang', action='store_true', help='Run Binary Analysis Next Gen on the firmware images')
-    parser.add_argument('-cbt', action='store_true', help='Run cv-bin-tool on extracted images')
+    parser.add_argument('-cbt', action='store_true', help='Run cve-bin-tool on extracted images')
     parser.add_argument('-a', '--all', action='store_true', help='Runs all supported tools on the firmware images')
     parser.add_argument('-v', '--verbose', action='store_true', help='Print debug logs')
+    parser.add_argument('-stats', action='store_true', help='Generate result statistics')
 
     if (len(sys.argv) == 1):
         parser.print_help(sys.stderr)
@@ -64,6 +67,8 @@ def main():
         run_bytesweep()
         run_cve_bin_tool()
         run_firmadyne()
+    if args.stats:
+        gen_cve_summary()
 
 if __name__ == '__main__':
     main()
