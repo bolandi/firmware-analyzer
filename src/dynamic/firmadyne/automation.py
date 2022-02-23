@@ -1,3 +1,5 @@
+import os.path
+
 import sys
 
 import logging
@@ -86,6 +88,13 @@ def run_firmadyne(image_path=None):
         sys.exit(0)
 
     for file in SRC_FILES:
+        target_dir = os.path.join(BASE_DIR, FIRMADYNE_DIR, file)
+        if not os.path.exists(target_dir):
+            os.makedirs(target_dir)
+        elif len(os.listdir(target_dir)) != 0:
+            logging.info(f'The target directory already exists, skipping analysis for {target_dir}')
+            continue
+
         working_dir, rootfs = _extract(os.path.join(SRC_PATH, file))
         if len(working_dir) == 0 or len(rootfs) == 0:
             continue
