@@ -6,8 +6,12 @@ from common_helper_process import execute_shell_command_get_return_code
 
 from src.constants import *
 
-EXTRACTION_CMD_BASE = 'docker run --rm -v "{INPUT_DIR}":/firmware-in:ro -v "{OUTPUT_DIR}":/firmware-out {DOCKER_IMAGE} fakeroot /home/extractor/extractor/extractor.py -np /firmware-in/"{IMG_BASE_NAME}" /firmware-out'
-FIRMADYNE_CMD_BASE = 'docker run --rm --privileged=true -v "{INPUT_DIR}":/input -v "{OUTPUT_DIR}":/output {DOCKER_IMAGE} /input /output'
+EXTRACTION_CMD_BASE = 'docker run --rm -v "{INPUT_DIR}":/firmware-in:ro '\
+                      '-v "{OUTPUT_DIR}":/firmware-out {DOCKER_IMAGE} ' \
+                      'fakeroot /home/extractor/extractor/extractor.py -np '\
+                      '/firmware-in/"{IMG_BASE_NAME}" /firmware-out'
+FIRMADYNE_CMD_BASE = 'docker run --rm --privileged=true -v "{INPUT_DIR}":/input '\
+                     '-v "{OUTPUT_DIR}":/output {DOCKER_IMAGE} /input /output'
 
 try:
     os.mkdir(FIRMADYNE_DIR)
