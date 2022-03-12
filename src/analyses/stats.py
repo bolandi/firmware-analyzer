@@ -27,11 +27,18 @@ def gen_cve_summary():
         logging.info("No CVE report found. Try running cve-bin-tool first")
         sys.exit(0)
 
-    # CSV columns: Firmware, CVE1, CVE2, ...
-    columns = ['Firmware']
-    # CSV rows: Image name, number of occurances
-    rows = []
+    # Firmware, CVE1, CVE2, ...
+    raw_columns = ['Firmware']
+    cve_columns = ['CVE-ID', 'CVSS Score', 'Severity']
+    total_columns = ['Total Firmware Images', 'Critical', 'High', 'Medium', 'Low']
+    total_stats = {'TOTAL': 0, 'CRITICAL': 0, 'HIGH': 0, 'MEDIUM': 0, 'LOW': 0}
+    # Image name, number of occurances
+    raw_rows = []
+    cve_rows = []
+    total_rows = []
     empty_dirs=[]
+
+    total=0
     for image_name in image_names:
         path = os.path.join(BASE_DIR, CVEBINTOOL_DIR, image_name)
         report = [f for f in os.listdir(path) if f.endswith('.json')]
@@ -47,20 +54,40 @@ def gen_cve_summary():
 
         for cve in json_data:
             cve_number = cve['cve_number']
-            if cve_number not in columns:
-                columns.append(cve_number)
+            cve_score = cve['score']
+            cve_severity = cve['severity']
+            if cve_number not in raw_columns:
+                raw_columns.append(cve_number)
+                cve_rows.append([cve_number, cve_score, cve_severity])
 
-        row = [''] * len(columns)
+        row = [0] * len(raw_columns)
         row[0] = image_name
         for cve in json_data:
+            cve_severity = cve['severity']
             occurance = cve['paths'].count(',') + 1
-            row[columns.index(cve['cve_number'])] = occurance
-        rows.append(row)
+            row[raw_columns.index(cve['cve_number'])] = row[raw_columns.index(cve['cve_number'])] + occurance
+            total_stats[cve_severity] = total_stats[cve_severity] + occurance
 
-    with open(os.path.join(STATS_DIR, 'cve-stats.csv'), 'w', encoding='UTF8', newline='') as f:
+        raw_rows.append(row)
+
+    # Total
+    total_rows.append([len(raw_rows), total_stats['CRITICAL'], total_stats['HIGH'],
+                          total_stats['MEDIUM'], total_stats['LOW']])
+
+    with open(os.path.join(STATS_DIR, 'firmware-cve-count.csv'), 'w', encoding='UTF8', newline='') as f:
         writer = csv.writer(f)
-        writer.writerow(columns)
-        writer.writerows(rows)
+        writer.writerow(raw_columns)
+        writer.writerows(raw_rows)
+
+    with open(os.path.join(STATS_DIR, 'cve-score-severity.csv'), 'w', encoding='UTF8', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(cve_columns)
+        writer.writerows(cve_rows)
+
+    with open(os.path.join(STATS_DIR, 'cve-total.csv'), 'w', encoding='UTF8', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(total_columns)
+        writer.writerows(total_rows)
 
     if len(empty_dirs) != 0:
         logging.debug('There was no report for the following images. Try deleting the directories and run cve-bin-tool again:')
