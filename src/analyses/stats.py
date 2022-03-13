@@ -1,8 +1,8 @@
+import csv
 import json
 import logging
 import sys
 from glob import glob
-import csv
 
 from src.constants import *
 
@@ -32,10 +32,12 @@ def gen_cve_summary():
     cve_columns = ['CVE-ID', 'CVSS Score', 'Severity']
     total_columns = ['Total Firmware Images', 'Critical', 'High', 'Medium', 'Low']
     total_stats = {'TOTAL': 0, 'CRITICAL': 0, 'HIGH': 0, 'MEDIUM': 0, 'LOW': 0}
+    severity_columns = ['Firmware', 'CRITICAL', 'HIGH', 'MEDIUM', 'LOW']
     # Image name, number of occurances
     raw_rows = []
     cve_rows = []
     total_rows = []
+    severity_rows = []
     empty_dirs=[]
 
     total=0
@@ -64,15 +66,20 @@ def gen_cve_summary():
             raw_columns = raw_columns[0:1] + sorted(raw_columns[1:], reverse=True)
 
         raw_columns[1:].sort(reverse=True)
-        row = [0] * len(raw_columns)
-        row[0] = image_name
+        raw_row = [0] * len(raw_columns)
+        severity_row = [0] * len(severity_columns)
+        raw_row[0] = image_name
+        severity_row[0] = image_name
         for cve in json_data:
             cve_severity = cve['severity']
             occurance = cve['paths'].count(',') + 1
-            row[raw_columns.index(cve['cve_number'])] = row[raw_columns.index(cve['cve_number'])] + occurance
+            raw_row[raw_columns.index(cve['cve_number'])] = raw_row[raw_columns.index(cve['cve_number'])] + occurance
+            severity_row[severity_columns.index(cve_severity)] = severity_row[
+                                                                     severity_columns.index(cve_severity)] + occurance
             total_stats[cve_severity] = total_stats[cve_severity] + occurance
 
-        raw_rows.append(row)
+        raw_rows.append(raw_row)
+        severity_rows.append(severity_row)
 
     # Total
     total_rows.append([len(raw_rows), total_stats['CRITICAL'], total_stats['HIGH'],
@@ -82,6 +89,11 @@ def gen_cve_summary():
         writer = csv.writer(f)
         writer.writerow(raw_columns)
         writer.writerows(raw_rows)
+
+    with open(os.path.join(STATS_DIR, 'firmware-cve-severity.csv'), 'w', encoding='UTF8', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(severity_columns)
+        writer.writerows(severity_rows)
 
     with open(os.path.join(STATS_DIR, 'cve-db.csv'), 'w', encoding='UTF8', newline='') as f:
         writer = csv.writer(f)
