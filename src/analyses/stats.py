@@ -60,6 +60,10 @@ def gen_cve_summary():
                 raw_columns.append(cve_number)
                 cve_rows.append([cve_number, cve_score, cve_severity])
 
+            # Sort descending
+            raw_columns = raw_columns[0:1] + sorted(raw_columns[1:], reverse=True)
+
+        raw_columns[1:].sort(reverse=True)
         row = [0] * len(raw_columns)
         row[0] = image_name
         for cve in json_data:
@@ -79,9 +83,10 @@ def gen_cve_summary():
         writer.writerow(raw_columns)
         writer.writerows(raw_rows)
 
-    with open(os.path.join(STATS_DIR, 'cve-score-severity.csv'), 'w', encoding='UTF8', newline='') as f:
+    with open(os.path.join(STATS_DIR, 'cve-db.csv'), 'w', encoding='UTF8', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(cve_columns)
+        cve_rows.sort(reverse=True)
         writer.writerows(cve_rows)
 
     with open(os.path.join(STATS_DIR, 'cve-total.csv'), 'w', encoding='UTF8', newline='') as f:
