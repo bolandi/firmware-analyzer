@@ -33,11 +33,13 @@ def gen_cve_summary():
     total_columns = ['Total Firmware Images', 'Critical', 'High', 'Medium', 'Low']
     total_stats = {'TOTAL': 0, 'CRITICAL': 0, 'HIGH': 0, 'MEDIUM': 0, 'LOW': 0}
     severity_columns = ['Firmware', 'CRITICAL', 'HIGH', 'MEDIUM', 'LOW']
+    top_cve_columns = ['CVE-ID', 'Occurance', 'Affectd Firmwares']
     # Image name, number of occurances
     raw_rows = []
     cve_rows = []
     total_rows = []
     severity_rows = []
+    top_cve_rows = []
     empty_dirs=[]
 
     total=0
@@ -85,6 +87,24 @@ def gen_cve_summary():
     total_rows.append([len(raw_rows), total_stats['CRITICAL'], total_stats['HIGH'],
                           total_stats['MEDIUM'], total_stats['LOW']])
 
+    # Top CVEs
+    index = 1
+    for cve_id in raw_columns[1:]:
+        occurance = 0
+        affected_fw = 0
+        for row in raw_rows:
+            try:
+                if row[index] == 0:
+                    continue
+            except IndexError:
+                row += [0]
+                continue
+            occurance += row[index]
+            affected_fw += 1
+        index += 1
+        top_cve_rows.append([cve_id, occurance, affected_fw])
+
+
     with open(os.path.join(STATS_DIR, 'firmware-cve-count.csv'), 'w', encoding='UTF8', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(raw_columns)
@@ -105,6 +125,11 @@ def gen_cve_summary():
         writer = csv.writer(f)
         writer.writerow(total_columns)
         writer.writerows(total_rows)
+
+    with open(os.path.join(STATS_DIR, 'top-cves.csv'), 'w', encoding='UTF8', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(top_cve_columns)
+        writer.writerows(top_cve_rows)
 
     if len(empty_dirs) != 0:
         logging.debug('There was no report for the following images. Try deleting the directories and run cve-bin-tool again:')
