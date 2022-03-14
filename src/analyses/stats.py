@@ -2,6 +2,7 @@ import csv
 import json
 import logging
 import sys
+import requests
 from glob import glob
 
 from src.constants import *
@@ -19,6 +20,13 @@ def _get_image_name(path):
         image_names.append(dir.split(os.path.sep)[-2])
     return image_names
 
+def _get_cve_description(cve_id):
+    logging.debug(f'Fetching description for {cve_id}')
+    uri = f'https://services.nvd.nist.gov/rest/json/cve/1.0/{cve_id}'
+    response = requests.get(uri)
+    json_data = json.loads(response.text)
+    description = json_data['result']['CVE_Items'][0]['cve']['description']['description_data'][0]['value']
+    return description
 
 # Generate CSV file containing firmware and CVEs
 def gen_cve_summary():
@@ -29,7 +37,7 @@ def gen_cve_summary():
 
     # Firmware, CVE1, CVE2, ...
     raw_columns = ['Firmware']
-    cve_columns = ['CVE-ID', 'CVSS Score', 'Severity']
+    cve_columns = ['CVE-ID', 'CVSS Score', 'Severity', 'Description']
     total_columns = ['Total Firmware Images', 'Critical', 'High', 'Medium', 'Low']
     total_stats = {'TOTAL': 0, 'CRITICAL': 0, 'HIGH': 0, 'MEDIUM': 0, 'LOW': 0}
     severity_columns = ['Firmware', 'CRITICAL', 'HIGH', 'MEDIUM', 'LOW']
@@ -62,7 +70,12 @@ def gen_cve_summary():
             cve_severity = cve['severity']
             if cve_number not in raw_columns:
                 raw_columns.append(cve_number)
-                cve_rows.append([cve_number, cve_score, cve_severity])
+                cve_description = ''
+                try:
+                    cve_description = _get_cve_description(cve_number)
+                except Exception:
+                    logging.error(f'Could not fetch description for {cve_number}')
+                cve_rows.append([cve_number, cve_score, cve_severity, cve_description])
 
             # Sort descending
             raw_columns = raw_columns[0:1] + sorted(raw_columns[1:], reverse=True)
