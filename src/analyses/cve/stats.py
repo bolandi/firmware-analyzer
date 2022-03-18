@@ -80,13 +80,29 @@ def gen_cve_summary():
             # Sort descending
             raw_columns = raw_columns[0:1] + sorted(raw_columns[1:], reverse=True)
 
-        raw_columns[1:].sort(reverse=True)
+    total=0
+    for image_name in image_names:
+        path = os.path.join(BASE_DIR, CVEBINTOOL_DIR, image_name)
+        report = [f for f in os.listdir(path) if f.endswith('.json')]
+        if len(report) == 0:
+            empty_dirs.append(image_name)
+            continue
+        f = open(os.path.join(path, report[0]), 'r')
+        # List of dicts
+        json_data = json.loads(f.read())
+
+        if (len(json_data) == 0):
+            continue
+
         raw_row = [0] * len(raw_columns)
         severity_row = [0] * len(severity_columns)
         raw_row[0] = image_name
         severity_row[0] = image_name
         for cve in json_data:
             cve_severity = cve['severity']
+            if cve['cve_number'] == 'CVE-2009-3720':
+            # if image_name == 'DCS-6915_REVA_FIRMWARE_1.01.00.zip' and cve_number == 'CVE-2009-3720':
+                    i = 1
             occurance = cve['paths'].count(',') + 1
             raw_row[raw_columns.index(cve['cve_number'])] = raw_row[raw_columns.index(cve['cve_number'])] + occurance
             severity_row[severity_columns.index(cve_severity)] = severity_row[
@@ -106,12 +122,12 @@ def gen_cve_summary():
         occurance = 0
         affected_fw = 0
         for row in raw_rows:
-            try:
-                if row[index] == 0:
-                    continue
-            except IndexError:
-                row += [0]
+            # try:
+            if row[index] == 0:
                 continue
+            # except IndexError:
+            #     row += [0]
+            #     continue
             occurance += row[index]
             affected_fw += 1
         index += 1
