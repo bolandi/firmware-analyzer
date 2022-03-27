@@ -22,7 +22,7 @@ except FileExistsError:
 def run_bang():
     if len(SRC_FILES) == 0:
         logging.info(f"No images found under {SRC_PATH}")
-        sys.exit(0)
+        return
 
     for file in SRC_FILES:
         src_img = path.join(SRC_PATH, file)

@@ -33,7 +33,7 @@ def gen_cve_summary():
     image_names = _get_image_name(CVEBINTOOL_DIR)
     if (len(image_names) == 0):
         logging.info("No CVE report found. Try running cve-bin-tool first")
-        sys.exit(0)
+        return
 
     # Firmware, CVE1, CVE2, ...
     raw_columns = ['Firmware']
