@@ -23,7 +23,7 @@ def _scan_binwalk_extracted_filesystems():
     dirs = get_binwalk_artifacts()
     if len(dirs) == 0:
         logging.info(f'No extracted image found under {BINWALK_DIR}.\nTry running binwalk first')
-        sys.exit(0)
+        return
 
     for name, path in dirs.items():
         logging.info(f'Running firmwalker on {path}')

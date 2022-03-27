@@ -28,7 +28,7 @@ def _extract():
     """
     if len(SRC_FILES) == 0:
         logging.info(f"No images found under {SRC_PATH}")
-        sys.exit(0)
+        return
 
     for file in SRC_FILES:
         if path.exists(f'{BINWALK_DIR}/{file}.log'):
@@ -83,7 +83,7 @@ def entropy(file=None, target_dir=None):
     for file in SRC_FILES:
         if len(SRC_FILES) == 0:
             logging.info(f"No images found under {SRC_PATH}")
-            sys.exit(0)
+            return
 
         if path.exists(f'{BINWALK_DIR}/{file}.entropy'):
             logging.info(f'Entropy for {file} already calculated.')

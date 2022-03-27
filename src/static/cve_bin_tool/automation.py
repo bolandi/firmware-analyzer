@@ -21,7 +21,7 @@ def run_cve_bin_tool():
     artifacts = get_binwalk_artifacts(dir_only=False)
     if len(artifacts) == 0:
         logging.info(f'No extracted image found under {BINWALK_DIR}.\nTry running binwalk first')
-        sys.exit(0)
+        return
 
     for img_name, extracted_path in artifacts.items():
         logging.info(f'Running cve-bin-tool analysis on {extracted_path}')

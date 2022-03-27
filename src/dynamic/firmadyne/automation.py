@@ -85,7 +85,7 @@ def run_firmadyne(image_path=None):
     # Run emulation for all the images found in images directory
     if len(SRC_FILES) == 0:
         logging.info(f"No images found under {SRC_PATH}")
-        sys.exit(0)
+        return
 
     for file in SRC_FILES:
         target_dir = os.path.join(BASE_DIR, FIRMADYNE_DIR, file)
