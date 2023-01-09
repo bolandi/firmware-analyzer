@@ -138,7 +138,6 @@ dmypy.json
 *.iml
 
 # Temp files
-images
 target
 bak
 
