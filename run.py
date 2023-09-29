@@ -13,7 +13,7 @@ try:
     from src.static.firmwalker.automation import run_firmwalker
     from src.static.binaryanalysis_ng.automation import run_bang
     from common_helper_process import execute_shell_command_get_return_code
-    from src.analyses.stats import gen_cve_summary
+    from src.analyses.cve.stats import gen_cve_summary
 except ImportError or ModuleNotFoundError:
     os.system('pip3 install -r requirements.txt')
 
