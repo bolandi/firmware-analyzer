@@ -4,7 +4,7 @@ A Generic cross-platform framework to integrate firmware analysis tools with pre
 
 ### Requirements
 
-    * Python 3.8
+    * Python 3.8+
     * Docker
 
 ### Installation
