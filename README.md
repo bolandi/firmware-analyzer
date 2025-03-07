@@ -19,7 +19,7 @@ python3 run.py -h
 
 The results will be generated under `$PWD/target/{tool_name}`
 
-### Existing integrated tools
+### Currently integrated tools
 
     * binwalk
     * cwe-checker
